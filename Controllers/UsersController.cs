@@ -37,6 +37,11 @@ namespace AtlassianStashSharp.Controllers
     {
         public string UserSlug { get; private set; }
 
+        public RepositoriesController Repositories
+        {
+            get { return new RepositoriesController(Stash, this); }
+        }
+
         public UserController(StashClient stash, BaseController parent, string userSlug)
             : base(stash, parent)
         {

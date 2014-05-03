@@ -35,6 +35,16 @@ namespace AtlassianStashSharp
             get { return new AllRepositoriesController(this); }
         }
 
+        public ProfileController Profile
+        {
+            get { return new ProfileController(this); }
+        }
+
+        public UsersController Users
+        {
+            get { return new UsersController(this); }
+        }
+
         private StashClient(string baseUrl)
         {
             Client = new RestClient {BaseUrl = baseUrl};
