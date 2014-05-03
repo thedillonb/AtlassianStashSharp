@@ -1,4 +1,4 @@
-# AtlassianStash#
+# AtlassianStashSharp
 
 A PCL C# Client Library for Atlassian's Stash. This library leverages the REST interface provided by the Atlassian Stash REST plugin. All interface calls are made via [PortableRest](https://github.com/advancedrei/PortableRest) and serialized via [JSON.Net](http://james.newtonking.com/json).
 
