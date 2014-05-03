@@ -40,6 +40,7 @@
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\MarkupController.cs" />
     <Compile Include="Controllers\ApplicationPropertiesController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\PullRequestsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\TagsController.cs" />
