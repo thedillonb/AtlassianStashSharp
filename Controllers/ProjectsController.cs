@@ -58,7 +58,7 @@ namespace AtlassianStashSharp.Controllers
             return new StashRequest<string>(() =>
             {
                 var req = new RestRequest(Url + "/avatar.png");
-                if (size != null) req.AddParameter("s", size);
+                if (size != null) req.AddQueryString("s", size);
                 return Stash.Client.ExecuteAsync<string>(req);
             });
         }

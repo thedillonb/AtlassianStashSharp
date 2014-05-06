@@ -12,6 +12,11 @@ namespace AtlassianStashSharp.Controllers
 {
     public class CommitsController : BaseController
     {
+        public CommitController this[string commitId]
+        {
+            get { return new CommitController(Stash, this, commitId); }
+        }
+
         internal CommitsController(StashClient stash, BaseController parent) 
             : base(stash, parent)
         {
@@ -22,10 +27,10 @@ namespace AtlassianStashSharp.Controllers
             return new StashPaginatedRequest<Commit>((start, limit) =>
             {
                 var req = new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit);
-                if (path != null) req.AddParameter("path", path);
-                if (since != null) req.AddParameter("since", since);
-                if (until != null) req.AddParameter("until", until);
-                if (withCounts != null) req.AddParameter("withCounts", withCounts.Value);
+                if (path != null) req.AddQueryString("path", path);
+                if (since != null) req.AddQueryString("since", since);
+                if (until != null) req.AddQueryString("until", until);
+                if (withCounts != null) req.AddQueryString("withCounts", withCounts.Value);
 
                 return Stash.Client.ExecuteAsync<Pagination<Commit>>(req);
             });
@@ -52,7 +57,7 @@ namespace AtlassianStashSharp.Controllers
             return new StashRequest<Commit>(() =>
             {
                 var req = new RestRequest(Url);
-                if (path != null) req.AddParameter("path", path);
+                if (path != null) req.AddQueryString("path", path);
                 return Stash.Client.ExecuteAsync<Commit>(req);
             });
         }
@@ -62,8 +67,8 @@ namespace AtlassianStashSharp.Controllers
             return new StashPaginatedRequest<Change>((start, limit) =>
             {
                 var req = new RestRequest(Url + "/changes", HttpMethod.Get).WithPagination(start, limit);
-                if (since != null) req.AddParameter("since", since);
-                if (withComments != null) req.AddParameter("withComments", withComments.Value);
+                if (since != null) req.AddQueryString("since", since);
+                if (withComments != null) req.AddQueryString("withComments", withComments.Value);
                 return Stash.Client.ExecuteAsync<Pagination<Change>>(req);
             });
         }

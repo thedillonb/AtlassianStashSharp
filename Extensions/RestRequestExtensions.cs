@@ -6,8 +6,8 @@ namespace AtlassianStashSharp.Extensions
     {
         public static RestRequest WithPagination(this RestRequest @this, int start, int limit)
         {
-            @this.AddParameter("start", start);
-            @this.AddParameter("limit", limit);
+            @this.AddQueryString("start", start);
+            @this.AddQueryString("limit", limit);
             return @this;
         }
     }

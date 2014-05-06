@@ -21,7 +21,7 @@ namespace AtlassianStashSharp.Controllers
             return new StashPaginatedRequest<string>((start, limit) =>
             {
                 var req = new RestRequest(url, HttpMethod.Get).WithPagination(start, limit);
-                if (at != null) req.AddParameter("at", at);
+                if (at != null) req.AddQueryString("at", at);
                 return Stash.Client.ExecuteAsync<Pagination<string>>(req);
             });
         }

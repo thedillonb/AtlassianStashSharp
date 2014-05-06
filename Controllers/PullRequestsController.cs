@@ -23,10 +23,10 @@ namespace AtlassianStashSharp.Controllers
             return new StashPaginatedRequest<PullRequest>((start, limit) =>
             {
                 var req = new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit);
-                if (direction != null) req.AddParameter("direction", direction);
-                if (at != null) req.AddParameter("at", at);
-                if (state != null) req.AddParameter("state", state);
-                if (order != null) req.AddParameter("order", order);
+                if (direction != null) req.AddQueryString("direction", direction);
+                if (at != null) req.AddQueryString("at", at);
+                if (state != null) req.AddQueryString("state", state);
+                if (order != null) req.AddQueryString("order", order);
                 return Stash.Client.ExecuteAsync<Pagination<PullRequest>>(req);
             });
         }
@@ -64,7 +64,7 @@ namespace AtlassianStashSharp.Controllers
             return new StashRequest(() =>
             {
                 var req = new RestRequest(Url + "/decline", HttpMethod.Post);
-                if (version != null) req.AddParameter("version", version);
+                if (version != null) req.AddQueryString("version", version);
                 return Stash.Client.ExecuteAsync<string>(req);
             });
         }
@@ -90,7 +90,7 @@ namespace AtlassianStashSharp.Controllers
             return new StashPaginatedRequest<Commit>((start, limit) =>
             {
                 var req = new RestRequest(Url + "/commits", HttpMethod.Get).WithPagination(start, limit);
-                if (withCounts != null) req.AddParameter("withCounts", withCounts.Value);
+                if (withCounts != null) req.AddQueryString("withCounts", withCounts.Value);
                 return Stash.Client.ExecuteAsync<Pagination<Commit>>(req);
             });
         }
@@ -100,7 +100,7 @@ namespace AtlassianStashSharp.Controllers
             return new StashPaginatedRequest<Comment>((start, limit) =>
             {
                 var req = new RestRequest(Url + "/comments", HttpMethod.Get).WithPagination(start, limit);
-                if (path != null) req.AddParameter("path", path);
+                if (path != null) req.AddQueryString("path", path);
                 return Stash.Client.ExecuteAsync<Pagination<Comment>>(req);
             });
         }
@@ -110,7 +110,7 @@ namespace AtlassianStashSharp.Controllers
             return new StashPaginatedRequest<Change>((start, limit) =>
             {
                 var req = new RestRequest(Url + "/changes", HttpMethod.Get).WithPagination(start, limit);
-                if (withComments != null) req.AddParameter("withComments", withComments.Value);
+                if (withComments != null) req.AddQueryString("withComments", withComments.Value);
                 return Stash.Client.ExecuteAsync<Pagination<Change>>(req);
             });
         }

@@ -42,10 +42,10 @@ namespace AtlassianStashSharp.Controllers
             return new StashPaginatedRequest<Repository>((start, limit) =>
             {
                 var req = new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit);
-                if (name != null) req.AddParameter("name", name);
-                if (projectname != null) req.AddParameter("projectname", projectname);
-                if (permission != null) req.AddParameter("permission", permission);
-                if (visibility != null) req.AddParameter("visibility", visibility);
+                if (name != null) req.AddQueryString("name", name);
+                if (projectname != null) req.AddQueryString("projectname", projectname);
+                if (permission != null) req.AddQueryString("permission", permission);
+                if (visibility != null) req.AddQueryString("visibility", visibility);
                 return Stash.Client.ExecuteAsync<Pagination<Repository>>(req);
             });
         }
@@ -111,13 +111,35 @@ namespace AtlassianStashSharp.Controllers
                     new RestRequest(Url + "/related", HttpMethod.Get).WithPagination(start, limit)));
         }
 
+        public StashRequest<ContentContainer> GetContents(string path = null, string at = null, bool? type = null, string blame = null, string noContent = null)
+        {
+            var url = Url + "/browse";
+            if (!string.IsNullOrEmpty(path))
+            {
+                if (path.StartsWith("/", System.StringComparison.Ordinal))
+                    url += path;
+                else
+                    url += "/" + path;
+            }
+
+            return new StashRequest<ContentContainer>(() =>
+            {
+                var req = new RestRequest(url, HttpMethod.Get);
+                if (at != null) req.AddQueryString("at", at);
+                if (type != null) req.AddQueryString("type", type.Value);
+                if (blame != null) req.AddQueryString("blame", blame);
+                if (noContent != null) req.AddQueryString("noContent", noContent);
+                return Stash.Client.ExecuteAsync<ContentContainer>(req);
+            });
+        }
+
         public StashPaginatedRequest<Change> GetAllChanges(string since = null, string until = null)
         {
             return new StashPaginatedRequest<Change>((start, limit) =>
             {
                 var req = new RestRequest(Url + "/changes", HttpMethod.Get).WithPagination(start, limit);
-                if (since != null) req.AddParameter("since", since);
-                if (until != null) req.AddParameter("until", until);
+                if (since != null) req.AddQueryString("since", since);
+                if (until != null) req.AddQueryString("until", until);
                 return Stash.Client.ExecuteAsync<Pagination<Change>>(req);
             });
         }

@@ -17,7 +17,7 @@ namespace AtlassianStashSharp.Controllers
             return new StashPaginatedRequest<Repository>((start, limit) =>
             {
                 var req = new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit);
-                if (permission != null) req.AddParameter("permission", permission);
+                if (permission != null) req.AddQueryString("permission", permission);
                 return Stash.Client.ExecuteAsync<Pagination<Repository>>(req);
             });
         }
