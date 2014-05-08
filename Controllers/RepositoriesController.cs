@@ -133,6 +133,28 @@ namespace AtlassianStashSharp.Controllers
             });
         }
 
+        public StashRequest<BrowseContent> GetFileContent(string path = null, string at = null, bool? type = null, string blame = null, string noContent = null)
+        {
+            var url = Url + "/browse";
+            if (!string.IsNullOrEmpty(path))
+            {
+                if (path.StartsWith("/", System.StringComparison.Ordinal))
+                    url += path;
+                else
+                    url += "/" + path;
+            }
+
+            return new StashRequest<BrowseContent>(() =>
+            {
+                var req = new RestRequest(url, HttpMethod.Get);
+                if (at != null) req.AddQueryString("at", at);
+                if (type != null) req.AddQueryString("type", type.Value);
+                if (blame != null) req.AddQueryString("blame", blame);
+                if (noContent != null) req.AddQueryString("noContent", noContent);
+                return Stash.Client.ExecuteAsync<BrowseContent>(req);
+            });
+        }
+
         public StashPaginatedRequest<Change> GetAllChanges(string since = null, string until = null)
         {
             return new StashPaginatedRequest<Change>((start, limit) =>

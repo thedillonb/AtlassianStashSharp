@@ -20,7 +20,7 @@ namespace AtlassianStashSharp.Models
 
         public long CreatedDate { get; set; }
 
-        public long UpdatedData { get; set; }
+        public long UpdatedDate { get; set; }
 
         public PullRequestParticipant Author { get; set; }
 

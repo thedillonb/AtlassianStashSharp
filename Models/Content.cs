@@ -2,6 +2,22 @@
 
 namespace AtlassianStashSharp.Models
 {
+    public class BrowseContent
+    {
+        public List<Line> Lines { get; set; }
+
+        public int Start { get; set; }
+
+        public int Size { get; set; }
+
+        public bool IsLastPage { get; set; }
+
+        public class Line
+        {
+            public string Text { get; set; }
+        }
+    }
+
     public class Content
     {
         public string Node { get; set; }

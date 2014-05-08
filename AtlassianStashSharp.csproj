@@ -67,6 +67,7 @@
     <Compile Include="StashRequest.cs" />
     <Compile Include="StashResponse.cs" />
     <Compile Include="Models\Content.cs" />
+    <Compile Include="Helpers\UnixDateTimeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -110,4 +111,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+  </ItemGroup>
 </Project>
