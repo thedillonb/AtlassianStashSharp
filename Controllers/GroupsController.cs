@@ -1,7 +1,5 @@
-﻿using System.Net.Http;
-using AtlassianStashSharp.Extensions;
+﻿using System.Collections.Generic;
 using AtlassianStashSharp.Models;
-using PortableRest;
 
 namespace AtlassianStashSharp.Controllers
 {
@@ -14,9 +12,12 @@ namespace AtlassianStashSharp.Controllers
 
         public StashPaginatedRequest<string> GetAll()
         {
-            return new StashPaginatedRequest<string>((start, limit) =>
-                Stash.Client.ExecuteAsync<Pagination<string>>(
-                    new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit)));
+            return new StashPaginatedRequest<string>((start, limit, token) =>
+                Stash.Get<Pagination<string>>(Url, new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit}
+                }, cancellationToken: token));
         }
 
         public override string Url

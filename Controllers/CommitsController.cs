@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using AtlassianStashSharp.Extensions;
+﻿using System.Collections.Generic;
 using AtlassianStashSharp.Models;
-using PortableRest;
 
 namespace AtlassianStashSharp.Controllers
 {
@@ -24,16 +17,16 @@ namespace AtlassianStashSharp.Controllers
 
         public StashPaginatedRequest<Commit> GetAll(string path = null, string since = null, string until = null, bool? withCounts = null)
         {
-            return new StashPaginatedRequest<Commit>((start, limit) =>
-            {
-                var req = new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit);
-                if (path != null) req.AddQueryString("path", path);
-                if (since != null) req.AddQueryString("since", since);
-                if (until != null) req.AddQueryString("until", until);
-                if (withCounts != null) req.AddQueryString("withCounts", withCounts.Value);
-
-                return Stash.Client.ExecuteAsync<Pagination<Commit>>(req);
-            });
+            return new StashPaginatedRequest<Commit>((start, limit, cancellationToken) =>
+                Stash.Get<Pagination<Commit>>(Url, new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit},
+                    {"path", path},
+                    {"since", since},
+                    {"until", until},
+                    {"withCounts", withCounts}
+                }, cancellationToken: cancellationToken));
         }
 
         public override string Url
@@ -54,30 +47,30 @@ namespace AtlassianStashSharp.Controllers
 
         public StashRequest<Commit> Get(string path = null)
         {
-            return new StashRequest<Commit>(() =>
-            {
-                var req = new RestRequest(Url);
-                if (path != null) req.AddQueryString("path", path);
-                return Stash.Client.ExecuteAsync<Commit>(req);
-            });
+            return new StashRequest<Commit>(cancellationToken =>
+                Stash.Get<Commit>(Url, new Dictionary<string, object>
+                {
+                    {"path", path}
+                }, cancellationToken: cancellationToken));
         }
 
         public StashPaginatedRequest<Change> GetAllChanges(string since = null, bool? withComments = null)
         {
-            return new StashPaginatedRequest<Change>((start, limit) =>
-            {
-                var req = new RestRequest(Url + "/changes", HttpMethod.Get).WithPagination(start, limit);
-                if (since != null) req.AddQueryString("since", since);
-                if (withComments != null) req.AddQueryString("withComments", withComments.Value);
-                return Stash.Client.ExecuteAsync<Pagination<Change>>(req);
-            });
+            return new StashPaginatedRequest<Change>((start, limit, cancellationToken) =>
+                Stash.Get<Pagination<Change>>(Url + "/changes", new Dictionary<string, object>
+                {
+                    {"limit", limit},
+                    {"start", start},
+                    {"since", since},
+                    {"withComments", withComments}
+                }, cancellationToken: cancellationToken));
         }
 
         public StashRequest Watch(bool value = true)
         {
             var url = Url + "/watch";
-            return value ? new StashRequest(() => Stash.Client.ExecuteAsync<string>(new RestRequest(url, HttpMethod.Post))) :
-                           new StashRequest(() => Stash.Client.ExecuteAsync<string>(new RestRequest(url, HttpMethod.Delete)));
+            return value ? new StashRequest(cancellationToken => Stash.Post<string>(url, null, cancellationToken: cancellationToken)) :
+                           new StashRequest(cancellationToken => Stash.Delete(url, cancellationToken: cancellationToken));
         }
 
         public override string Url

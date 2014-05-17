@@ -1,7 +1,5 @@
-﻿using System.Net.Http;
-using AtlassianStashSharp.Extensions;
+﻿using System.Collections.Generic;
 using AtlassianStashSharp.Models;
-using PortableRest;
 
 namespace AtlassianStashSharp.Controllers
 {
@@ -19,9 +17,12 @@ namespace AtlassianStashSharp.Controllers
 
         public StashPaginatedRequest<Project> GetAll()
         {
-            return new StashPaginatedRequest<Project>((start, limit) => 
-                Stash.Client.ExecuteAsync<Pagination<Project>>(
-                    new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit)));
+            return new StashPaginatedRequest<Project>((start, limit, token) =>
+                Stash.Get<Pagination<Project>>(Url, new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit}
+                }, cancellationToken: token));
         }
 
 
@@ -48,19 +49,18 @@ namespace AtlassianStashSharp.Controllers
 
         public StashRequest<Project> Get()
         {
-            return new StashRequest<Project>(() =>
-                Stash.Client.ExecuteAsync<Project>(new RestRequest(Url)));
+            return new StashRequest<Project>(token =>
+                Stash.Get<Project>(Url, cancellationToken: token));
         }
 
 
         public StashRequest<string> GetAvatar(string size = null)
         {
-            return new StashRequest<string>(() =>
-            {
-                var req = new RestRequest(Url + "/avatar.png");
-                if (size != null) req.AddQueryString("s", size);
-                return Stash.Client.ExecuteAsync<string>(req);
-            });
+            return new StashRequest<string>(token =>
+                Stash.Get<string>(Url + "/avatar.png", new Dictionary<string, object>
+                {
+                    {"s", size}
+                }, cancellationToken: token));
         }
 
         public override string Url

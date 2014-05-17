@@ -1,7 +1,5 @@
-﻿using System.Net.Http;
-using AtlassianStashSharp.Extensions;
+﻿using System.Collections.Generic;
 using AtlassianStashSharp.Models;
-using PortableRest;
 
 namespace AtlassianStashSharp.Controllers
 {
@@ -14,12 +12,13 @@ namespace AtlassianStashSharp.Controllers
 
         public StashPaginatedRequest<Repository> GetRecentRepos(string permission = null)
         {
-            return new StashPaginatedRequest<Repository>((start, limit) =>
-            {
-                var req = new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit);
-                if (permission != null) req.AddQueryString("permission", permission);
-                return Stash.Client.ExecuteAsync<Pagination<Repository>>(req);
-            });
+            return new StashPaginatedRequest<Repository>((start, limit, cancellationToken) =>
+                Stash.Get<Pagination<Repository>>(Url, new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit},
+                    {"permission", permission}
+                }, cancellationToken: cancellationToken));
         }
 
         public override string Url

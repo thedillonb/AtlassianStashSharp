@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using AtlassianStashSharp.Models;
-using PortableRest;
+﻿using AtlassianStashSharp.Models;
 
 namespace AtlassianStashSharp.Controllers
 {
@@ -13,12 +11,7 @@ namespace AtlassianStashSharp.Controllers
 
         public StashRequest<Markup> Preview(string markup)
         {
-            return new StashRequest<Markup>(() =>
-            {
-                var req = new RestRequest(Url + "/preview", HttpMethod.Post);
-                req.AddParameter(markup);
-                return Stash.Client.ExecuteAsync<Markup>(req);
-            });
+            return new StashRequest<Markup>(token => Stash.Post<Markup>(Url + "/preview", markup, cancellationToken: token));
         }
 
         public override string Url

@@ -1,5 +1,4 @@
 ﻿using AtlassianStashSharp.Models;
-using PortableRest;
 
 namespace AtlassianStashSharp.Controllers
 {
@@ -12,8 +11,7 @@ namespace AtlassianStashSharp.Controllers
 
         public StashRequest<ApplicationProperties> Get()
         {
-            return new StashRequest<ApplicationProperties>(() =>
-                Stash.Client.ExecuteAsync<ApplicationProperties>(new RestRequest(Url)));
+            return new StashRequest<ApplicationProperties>(token => Stash.Get<ApplicationProperties>(Url, cancellationToken: token));
         }
 
         public override string Url

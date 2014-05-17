@@ -1,7 +1,5 @@
-﻿using System.Net.Http;
-using AtlassianStashSharp.Extensions;
+﻿using System.Collections.Generic;
 using AtlassianStashSharp.Models;
-using PortableRest;
 
 namespace AtlassianStashSharp.Controllers
 {
@@ -19,9 +17,12 @@ namespace AtlassianStashSharp.Controllers
 
         public StashPaginatedRequest<Repository> GetAll()
         {
-            return new StashPaginatedRequest<Repository>((start, limit) =>
-                Stash.Client.ExecuteAsync<Pagination<Repository>>(
-                    new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit)));
+            return new StashPaginatedRequest<Repository>((start, limit, token) =>
+                Stash.Get<Pagination<Repository>>(Url, new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit}
+                }, cancellationToken: token));
         }
 
         public override string Url
@@ -39,15 +40,16 @@ namespace AtlassianStashSharp.Controllers
 
         public StashPaginatedRequest<Repository> GetAll(string name = null, string projectname = null, string permission = null, string visibility = null)
         {
-            return new StashPaginatedRequest<Repository>((start, limit) =>
-            {
-                var req = new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit);
-                if (name != null) req.AddQueryString("name", name);
-                if (projectname != null) req.AddQueryString("projectname", projectname);
-                if (permission != null) req.AddQueryString("permission", permission);
-                if (visibility != null) req.AddQueryString("visibility", visibility);
-                return Stash.Client.ExecuteAsync<Pagination<Repository>>(req);
-            });
+            return new StashPaginatedRequest<Repository>((start, limit, token) =>
+                Stash.Get<Pagination<Repository>>(Url, new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit},
+                    {"name", name},
+                    {"projectname", projectname},
+                    {"permission", permission},
+                    {"visibility", visibility}
+                }, cancellationToken: token));
         }
 
         public override string Url
@@ -93,22 +95,28 @@ namespace AtlassianStashSharp.Controllers
 
         public StashRequest<Repository> Get()
         {
-            return new StashRequest<Repository>(() =>
-                Stash.Client.ExecuteAsync<Repository>(new RestRequest(Url, HttpMethod.Get)));
+            return new StashRequest<Repository>(token => 
+                Stash.Get<Repository>(Url, cancellationToken: token));
         }
 
         public StashPaginatedRequest<Repository> GetForks()
         {
-            return new StashPaginatedRequest<Repository>((start, limit) =>
-                Stash.Client.ExecuteAsync<Pagination<Repository>>(
-                    new RestRequest(Url + "/forks", HttpMethod.Get).WithPagination(start, limit)));
+            return new StashPaginatedRequest<Repository>((start, limit, token) =>
+                Stash.Get<Pagination<Repository>>(Url + "/forks", new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit}
+                }, cancellationToken: token));
         }
 
         public StashPaginatedRequest<Repository> GetRelated()
         {
-            return new StashPaginatedRequest<Repository>((start, limit) =>
-                Stash.Client.ExecuteAsync<Pagination<Repository>>(
-                    new RestRequest(Url + "/related", HttpMethod.Get).WithPagination(start, limit)));
+            return new StashPaginatedRequest<Repository>((start, limit, token) =>
+                Stash.Get<Pagination<Repository>>(Url + "/related", new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit}
+                }, cancellationToken: token));
         }
 
         public StashRequest<ContentContainer> GetContents(string path = null, string at = null, bool? type = null, string blame = null, string noContent = null)
@@ -122,15 +130,14 @@ namespace AtlassianStashSharp.Controllers
                     url += "/" + path;
             }
 
-            return new StashRequest<ContentContainer>(() =>
-            {
-                var req = new RestRequest(url, HttpMethod.Get);
-                if (at != null) req.AddQueryString("at", at);
-                if (type != null) req.AddQueryString("type", type.Value);
-                if (blame != null) req.AddQueryString("blame", blame);
-                if (noContent != null) req.AddQueryString("noContent", noContent);
-                return Stash.Client.ExecuteAsync<ContentContainer>(req);
-            });
+            return new StashRequest<ContentContainer>(token =>
+                Stash.Get<ContentContainer>(url, new Dictionary<string, object>
+                {
+                    {"at", at},
+                    {"type", type},
+                    {"blame", blame},
+                    {"noContent", noContent}
+                }, cancellationToken: token));
         }
 
         public StashRequest<BrowseContent> GetFileContent(string path = null, string at = null, bool? type = null, string blame = null, string noContent = null)
@@ -144,26 +151,26 @@ namespace AtlassianStashSharp.Controllers
                     url += "/" + path;
             }
 
-            return new StashRequest<BrowseContent>(() =>
-            {
-                var req = new RestRequest(url, HttpMethod.Get);
-                if (at != null) req.AddQueryString("at", at);
-                if (type != null) req.AddQueryString("type", type.Value);
-                if (blame != null) req.AddQueryString("blame", blame);
-                if (noContent != null) req.AddQueryString("noContent", noContent);
-                return Stash.Client.ExecuteAsync<BrowseContent>(req);
-            });
+            return new StashRequest<BrowseContent>(token =>
+                Stash.Get<BrowseContent>(url, new Dictionary<string, object>
+                {
+                    {"at", at},
+                    {"type", type},
+                    {"blame", blame},
+                    {"noContent", noContent}
+                }, cancellationToken: token));
         }
 
         public StashPaginatedRequest<Change> GetAllChanges(string since = null, string until = null)
         {
-            return new StashPaginatedRequest<Change>((start, limit) =>
-            {
-                var req = new RestRequest(Url + "/changes", HttpMethod.Get).WithPagination(start, limit);
-                if (since != null) req.AddQueryString("since", since);
-                if (until != null) req.AddQueryString("until", until);
-                return Stash.Client.ExecuteAsync<Pagination<Change>>(req);
-            });
+            return new StashPaginatedRequest<Change>((start, limit, token) =>
+                Stash.Get<Pagination<Change>>(Url + "/changes", new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit},
+                    {"since", since},
+                    {"until", until}
+                }, cancellationToken: token));
         }
 
         public override string Url

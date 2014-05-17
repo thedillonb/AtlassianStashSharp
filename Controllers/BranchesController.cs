@@ -1,7 +1,5 @@
-﻿using System.Net.Http;
-using AtlassianStashSharp.Extensions;
+﻿using System.Collections.Generic;
 using AtlassianStashSharp.Models;
-using PortableRest;
 
 namespace AtlassianStashSharp.Controllers
 {
@@ -14,22 +12,21 @@ namespace AtlassianStashSharp.Controllers
 
         public StashRequest<Branch> GetDefault()
         {
-            return new StashRequest<Branch>(() =>
-                Stash.Client.ExecuteAsync<Branch>(
-                    new RestRequest(Url + "/default", HttpMethod.Get)));
+            return new StashRequest<Branch>(token => Stash.Get<Branch>(Url + "/default", cancellationToken: token));
         }
 
         public StashPaginatedRequest<Branch> GetAll(string branch = null, bool? details = null, string filterText = null, string orderBy = null)
         {
-            return new StashPaginatedRequest<Branch>((start, limit) =>
+            return new StashPaginatedRequest<Branch>((start, limit, token) => 
+                Stash.Get<Pagination<Branch>>(Url, new Dictionary<string, object>
             {
-                var req = new RestRequest(Url, HttpMethod.Get).WithPagination(start, limit);
-                if (branch != null) req.AddQueryString("branch", branch);
-                if (details != null) req.AddQueryString("details", details.Value);
-                if (filterText != null) req.AddQueryString("filterText", filterText);
-                if (orderBy != null) req.AddQueryString("orderBy", orderBy);
-                return Stash.Client.ExecuteAsync<Pagination<Branch>>(req);
-            });
+                {"start", start},
+                {"limit", limit},
+                {"branch", branch},
+                {"details", details},
+                {"filterText", filterText},
+                {"orderBy", orderBy}
+            }, cancellationToken: token));
         }
 
         public override string Url
