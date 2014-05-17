@@ -1,4 +1,6 @@
-﻿namespace AtlassianStashSharp.Models
+﻿using System.Collections.Generic;
+
+namespace AtlassianStashSharp.Models
 {
     public class Project
     {
@@ -15,5 +17,9 @@
         public string Type { get; set; }
 
         public bool IsPersonal { get; set; }
+
+        public Link Link { get; set; }
+
+        public Dictionary<string, List<ComplexLink>> Links { get; set; }
     }
 }
