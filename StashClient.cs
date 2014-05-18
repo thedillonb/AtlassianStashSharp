@@ -13,6 +13,7 @@ namespace AtlassianStashSharp
     public class StashClient
     {
         private readonly HttpClient _client;
+        private readonly Uri _baseUri;
 
         public static Func<HttpClient> HttpClientFactory = () => new HttpClient(); 
 
@@ -51,10 +52,10 @@ namespace AtlassianStashSharp
             get { return new UsersController(this); }
         }
 
-        private StashClient(string baseUrl)
+        private StashClient(Uri baseUrl)
         {
             _client = HttpClientFactory();
-            _client.BaseAddress = new Uri(baseUrl);
+            _baseUri = baseUrl;
             _client.DefaultRequestHeaders.Add("User-Agent", "Atlassian Stash Sharp Client");
         }
 
@@ -67,17 +68,17 @@ namespace AtlassianStashSharp
             foreach (var parameter in parameters.Where(x => x.Value != null))
             {
                 sb.AppendFormat("&{0}={1}", Uri.EscapeUriString(parameter.Key),
-                    Uri.EscapeDataString(parameter.Key));
+                    Uri.EscapeDataString(parameter.Value.ToString()));
             }
 
             return string.Format(relativeUrl.Contains("?") ? "{0}{1}" : "{0}?{1}", relativeUrl, sb);
         }
 
-        private static HttpRequestMessage CreateRequestMessage(string relativeUrl, HttpMethod method,
-                                                               IEnumerable<KeyValuePair<string, object>> parameters,
-                                                               IEnumerable<KeyValuePair<string, object>> headers)
+        private HttpRequestMessage CreateRequestMessage(string relativeUrl, HttpMethod method,
+                                                        IEnumerable<KeyValuePair<string, object>> parameters,
+                                                        IEnumerable<KeyValuePair<string, object>> headers)
         {
-            var request = new HttpRequestMessage(method, CreateQueryUrl(relativeUrl, parameters));
+            var request = new HttpRequestMessage(method, new Uri(_baseUri.AbsoluteUri + CreateQueryUrl(relativeUrl, parameters)));
 
             if (headers != null)
             {
@@ -145,11 +146,11 @@ namespace AtlassianStashSharp
             return JsonConvert.DeserializeObject<T>(rawResponseContent);
         }
 
-        public static StashClient CrateBasic(string baseUrl, string username, string password)
+        public static StashClient CrateBasic(Uri baseUri, string username, string password)
         {
             var token = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", username, password)));
             var authHeader = string.Format("Basic {0}", token);
-            var client = new StashClient(baseUrl);
+            var client = new StashClient(baseUri);
             client._client.DefaultRequestHeaders.Add("Authorization", authHeader);
             return client;
         }
