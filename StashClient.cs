@@ -52,9 +52,16 @@ namespace AtlassianStashSharp
             get { return new UsersController(this); }
         }
 
+        public TimeSpan Timeout
+        {
+            get { return _client.Timeout; }
+            set { _client.Timeout = value; }
+        }
+
         private StashClient(Uri baseUrl)
         {
             _client = HttpClientFactory();
+            _client.Timeout = new TimeSpan(0, 0, 25);
             _baseUri = baseUrl;
             _client.DefaultRequestHeaders.Add("User-Agent", "Atlassian Stash Sharp Client");
         }
