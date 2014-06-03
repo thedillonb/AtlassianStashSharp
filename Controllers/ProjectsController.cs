@@ -28,7 +28,7 @@ namespace AtlassianStashSharp.Controllers
 
         public override string Url
         {
-            get { return "/projects"; }
+            get { return "/rest/api/1.0/projects"; }
         }
     }
 

@@ -16,7 +16,7 @@ namespace AtlassianStashSharp.Controllers
 
         public override string Url
         {
-            get { return "/application-properties"; }
+            get { return "/rest/api/1.0/application-properties"; }
         }
     }
 }

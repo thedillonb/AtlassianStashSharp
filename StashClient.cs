@@ -52,6 +52,16 @@ namespace AtlassianStashSharp
             get { return new UsersController(this); }
         }
 
+        public BuildStatusController BuildStatus
+        {
+            get { return new BuildStatusController(this); }
+        }
+
+        public BranchUtilsController BranchUtilities
+        {
+            get { return new BranchUtilsController(this); }
+        }
+
         public TimeSpan Timeout
         {
             get { return _client.Timeout; }

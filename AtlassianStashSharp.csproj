@@ -67,6 +67,9 @@
     <Compile Include="StashResponse.cs" />
     <Compile Include="Models\Content.cs" />
     <Compile Include="Helpers\UnixDateTimeHelper.cs" />
+    <Compile Include="Models\BuildStatus.cs" />
+    <Compile Include="Controllers\BuildStatusController.cs" />
+    <Compile Include="Controllers\BranchUtilsController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">

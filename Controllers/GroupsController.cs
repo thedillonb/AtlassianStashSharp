@@ -22,7 +22,7 @@ namespace AtlassianStashSharp.Controllers
 
         public override string Url
         {
-            get { return "/groups"; }
+            get { return "/rest/api/1.0/groups"; }
         }
     }
 }

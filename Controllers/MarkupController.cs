@@ -16,7 +16,7 @@ namespace AtlassianStashSharp.Controllers
 
         public override string Url
         {
-            get { return "/markup"; }
+            get { return "/rest/api/1.0/markup"; }
         }
     }
 }
