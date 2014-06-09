@@ -71,6 +71,7 @@
     <Compile Include="Controllers\BuildStatusController.cs" />
     <Compile Include="Controllers\BranchUtilsController.cs" />
     <Compile Include="Helpers\PaginationHelper.cs" />
+    <Compile Include="Models\Diff.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">

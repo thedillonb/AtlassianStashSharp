@@ -73,6 +73,22 @@ namespace AtlassianStashSharp.Controllers
                            new StashRequest(cancellationToken => Stash.Delete(url, cancellationToken: cancellationToken));
         }
 
+        public StashRequest<Diff> GetDiff(string path = null, int contextLines = -1, string srcPath = null, string whitespace = null, bool? withComments = null)
+        {
+            var url = Url + "/diff";
+            if (!string.IsNullOrEmpty(path))
+                url = url + "/" + path;
+
+            return new StashRequest<Diff>(token => 
+                Stash.Get<Diff>(url, new Dictionary<string, object>
+                {
+                    {"contextLines", contextLines},
+                    {"srcPath", srcPath},
+                    {"whitespace", whitespace},
+                    {"withComments", withComments},
+                }, cancellationToken: token));
+        }
+
         public override string Url
         {
             get { return Parent.Url + "/" + CommitId; }
