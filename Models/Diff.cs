@@ -14,6 +14,8 @@ namespace AtlassianStashSharp.Models
 
             public List<Hunk> Hunks { get; set; }
 
+            public List<Comment> LineComments { get; set; }
+
             public class Hunk
             {
                 public List<Segment> Segments { get; set; }
@@ -33,6 +35,8 @@ namespace AtlassianStashSharp.Models
                         public string Line { get; set; }
 
                         public bool Truncated { get; set; }
+
+                        public List<long> CommentIds { get; set; }
                     }
                 }
             }

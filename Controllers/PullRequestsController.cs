@@ -50,6 +50,11 @@ namespace AtlassianStashSharp.Controllers
             return new StashRequest<PullRequest>(token => Stash.Get<PullRequest>(Url, cancellationToken: token));
         }
 
+        public StashRequest<MergeResult> GetMergeResult()
+        {
+            return new StashRequest<MergeResult>(token => Stash.Get<MergeResult>(Url + "/merge", cancellationToken: token));
+        }
+
         public StashRequest Watch(bool value = true)
         {
             var url = Url + "/watch";
@@ -102,6 +107,18 @@ namespace AtlassianStashSharp.Controllers
                     {"start", start},
                     {"limit", limit},
                     {"path", path}
+                }, cancellationToken: token));
+        }
+
+        public StashPaginatedRequest<Activity> GetAllActivities(long? fromId = null, string fromType = null)
+        {
+            return new StashPaginatedRequest<Activity>((start, limit, token) =>
+                Stash.Get<Pagination<Activity>>(Url + "/activities", new Dictionary<string, object>
+                {
+                    {"start", start},
+                    {"limit", limit},
+                    {"fromId", fromId},
+                    {"fromType", fromType}
                 }, cancellationToken: token));
         }
 

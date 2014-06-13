@@ -1,6 +1,8 @@
-﻿namespace AtlassianStashSharp.Models
+﻿using System.Collections.Generic;
+
+namespace AtlassianStashSharp.Models
 {
-    public class Comment
+    public class PostComment
     {
         public string Text { get; set; }
 
@@ -25,5 +27,21 @@
 
             public string SrcPath { get; set; }
         }
+    }
+
+
+    public class Comment
+    {
+        public long Id { get; set; }
+
+        public string Text { get; set; }
+
+        public User Author { get; set; }
+
+        public long CreatedDate { get; set; }
+
+        public long UpdatedDate { get; set; }
+
+        public List<Comment> Comments { get; set; }
     }
 }
