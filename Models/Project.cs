@@ -16,8 +16,6 @@ namespace AtlassianStashSharp.Models
 
         public string Type { get; set; }
 
-        public bool IsPersonal { get; set; }
-
         public Link Link { get; set; }
 
         public Dictionary<string, List<ComplexLink>> Links { get; set; }

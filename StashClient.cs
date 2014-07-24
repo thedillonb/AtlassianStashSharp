@@ -14,8 +14,14 @@ namespace AtlassianStashSharp
     {
         private readonly HttpClient _client;
         private readonly Uri _baseUri;
+        private static JsonSerializerSettings SerializationSettings;
 
         public static Func<HttpClient> HttpClientFactory = () => new HttpClient(); 
+
+        static StashClient()
+        {
+            SerializationSettings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore };
+        }
 
         public ProjectsController Projects
         {
@@ -95,7 +101,10 @@ namespace AtlassianStashSharp
                                                         IEnumerable<KeyValuePair<string, object>> parameters,
                                                         IEnumerable<KeyValuePair<string, object>> headers)
         {
-            var request = new HttpRequestMessage(method, new Uri(_baseUri.AbsoluteUri + CreateQueryUrl(relativeUrl, parameters)));
+            var baseUrl = _baseUri.AbsoluteUri;
+            var queryUrl = CreateQueryUrl(relativeUrl, parameters);
+            var uri = new Uri(baseUrl.TrimEnd('/') + "/" + queryUrl.TrimStart('/'));
+            var request = new HttpRequestMessage(method, uri);
 
             if (headers != null)
             {
@@ -160,7 +169,7 @@ namespace AtlassianStashSharp
             if (typeof(T) == typeof(string))
                 return rawResponseContent as T;
 
-            return JsonConvert.DeserializeObject<T>(rawResponseContent);
+            return JsonConvert.DeserializeObject<T>(rawResponseContent, SerializationSettings);
         }
 
         public static StashClient CrateBasic(Uri baseUri, string username, string password)
